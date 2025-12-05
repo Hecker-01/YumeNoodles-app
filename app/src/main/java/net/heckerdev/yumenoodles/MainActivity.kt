@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         webView.settings.setSupportZoom(true)
         
         // Load URL - Change this to your desired website
-        webView.loadUrl("https://portfolio.heckerdev.net/")
+        webView.loadUrl("http://172.16.131.197:5173/")
     }
     
     private fun showErrorPage(error: WebResourceError?) {
