@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center" android:padding="32dp" android:background="?android:attr/colorBackground">
+
+    <TextView android:id="@+id/errorIcon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⚠️" android:textSize="72sp" android:layout_marginBottom="24dp" />
+
+    <TextView android:id="@+id/errorTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Connection Error" android:textSize="24sp" android:textStyle="bold" android:textColor="?android:attr/textColorPrimary" android:layout_marginBottom="12dp" />
+
+    <TextView android:id="@+id/errorMessage" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Unable to load the page" android:textSize="16sp" android:textColor="?android:attr/textColorSecondary" android:gravity="center" android:layout_marginBottom="8dp" />
+
+    <TextView android:id="@+id/errorDetails" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Error details will appear here" android:textSize="14sp" android:textColor="?android:attr/textColorTertiary" android:gravity="center" android:layout_marginBottom="32dp" />
+
+    <Button android:id="@+id/retryButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Retry" android:textSize="16sp" android:paddingHorizontal="48dp" android:paddingVertical="12dp" />
+
+</LinearLayout>
