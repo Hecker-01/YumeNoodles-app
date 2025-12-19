@@ -11,8 +11,8 @@ android {
         applicationId = "net.heckerdev.yumenoodles"
         minSdk = 31
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.0.2-alpha"
+        versionCode = 4
+        versionName = "1.1-beta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,11 +33,11 @@ android {
     }
 
     buildTypes {
-        // debug {
+        debug {
         //     applicationIdSuffix = ".dev"
-        //     versionNameSuffix = "-dev"
+            versionNameSuffix = "-dev"
         //     signingConfig = signingConfigs.getByName("dev")
-        // }
+        }
         release {
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("release")

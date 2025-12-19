@@ -2,8 +2,10 @@ package net.heckerdev.yumenoodles
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.net.http.SslError
 import android.os.Bundle
 import android.view.View
+import android.webkit.SslErrorHandler
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -58,10 +60,18 @@ class MainActivity : AppCompatActivity() {
         
         // Initialize WebView
         webView = findViewById(R.id.webView)
+        
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 hideErrorPage()
+            }
+            
+            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+                // Show error page for SSL certificate issues
+                lastFailedUrl = view?.url
+                handler?.cancel() // Don't proceed with invalid certificate
+                showSslErrorPage(error)
             }
             
             override fun onReceivedError(
@@ -94,9 +104,24 @@ class MainActivity : AppCompatActivity() {
         webView.settings.builtInZoomControls = true
         webView.settings.displayZoomControls = false
         webView.settings.setSupportZoom(true)
+        webView.settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        webView.settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
+        webView.settings.databaseEnabled = true
+        webView.settings.javaScriptCanOpenWindowsAutomatically = true
         
-        // Load URL - Change this to your desired website
-        webView.loadUrl("http://172.16.131.197:5173/")
+        // Set user agent to Chrome to fix Vue/SPA rendering issues
+        webView.settings.userAgentString = "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+        
+        // Load URL with headers to make it look like a real browser
+        val headers = mapOf(
+            "Accept" to "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language" to "en-US,en;q=0.9",
+            "Accept-Encoding" to "gzip, deflate, br",
+            "DNT" to "1",
+            "Connection" to "keep-alive",
+            "Upgrade-Insecure-Requests" to "1"
+        )
+        webView.loadUrl("https://yume.heckerdev.net/", headers)
     }
     
     private fun showErrorPage(error: WebResourceError?) {
@@ -133,6 +158,26 @@ class MainActivity : AppCompatActivity() {
                 errorDetails.text = "Error code: $errorCode"
             }
         }
+    }
+    
+    private fun showSslErrorPage(error: SslError?) {
+        errorPageContainer.visibility = View.VISIBLE
+        webView.visibility = View.GONE
+        
+        errorTitle.text = "Security Error"
+        errorMessage.text = "SSL Certificate Error"
+        
+        val errorDetails = when (error?.primaryError) {
+            SslError.SSL_EXPIRED -> "The certificate has expired"
+            SslError.SSL_IDMISMATCH -> "The certificate hostname does not match"
+            SslError.SSL_NOTYETVALID -> "The certificate is not yet valid"
+            SslError.SSL_UNTRUSTED -> "The certificate authority is not trusted"
+            SslError.SSL_DATE_INVALID -> "The certificate date is invalid"
+            SslError.SSL_INVALID -> "The certificate is invalid"
+            else -> "There is a problem with the website's security certificate"
+        }
+        
+        this.errorDetails.text = errorDetails
     }
     
     private fun hideErrorPage() {
